@@ -1,0 +1,8 @@
+﻿{
+  "JwtSetting": {
+    "SecurityKey": "88d082e6-5672-4c6c-bc42-6fcce20fbf51", // 密钥
+    "Issuer": "jwtIssuertest", // 颁发者
+    "Audience": "jwtAudiencetest", // 接收者
+    "ExpireSeconds": 3600 // 过期时间（3600）
+  }
+}
