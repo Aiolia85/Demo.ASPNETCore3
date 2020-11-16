@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Entity;
+using Entity.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,16 +19,19 @@ namespace WebApplication.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IOptions<AppSetting> _option;
         private readonly IUserInfoRepository _repository;
+        private readonly IMapper _mapper;
 
-        public HomeController(ILogger<HomeController> logger, IOptions<AppSetting> option,IUserInfoRepository repository)
+        public HomeController(ILogger<HomeController> logger, IOptions<AppSetting> option, IUserInfoRepository repository, IMapper mapper)
         {
-            _logger = logger;
+            this._logger = logger;
             this._option = option;
             this._repository = repository;
+            this._mapper = mapper;
         }
 
         public IActionResult Index()
         {
+
             UserInfo ui = new UserInfo();
             ui.CreateDate = DateTime.Now;
             ui.Username = "testName";
@@ -36,6 +41,11 @@ namespace WebApplication.Controllers
             this._repository.Save();
 
             _logger.LogInformation("adsbv");
+
+            List<UserInfo> users = this._repository.GetAll().ToList();
+            IEnumerable<UserDTO> sendMsgViewModels = _mapper.Map<List<UserInfo>, IEnumerable<UserDTO>>(users);
+
+
             throw new Exception("ddsdfsdfsd");
             return View();
         }

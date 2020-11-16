@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -49,6 +50,8 @@ namespace WebApplication
 
             services.Configure<AppSetting>(Configuration);
             var appSetting = Configuration.Get<AppSetting>();
+
+            services.AddAutoMapper(o=>o.AddProfile(new AutoMapperPerfile()));
 
             #region jwt
             var configuration = new ConfigurationBuilder()
