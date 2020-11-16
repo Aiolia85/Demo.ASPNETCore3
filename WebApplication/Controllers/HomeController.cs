@@ -28,9 +28,10 @@ namespace WebApplication.Controllers
             this._repository = repository;
             this._mapper = mapper;
         }
-
         public IActionResult Index()
         {
+            
+
 
             UserInfo ui = new UserInfo();
             ui.CreateDate = DateTime.Now;

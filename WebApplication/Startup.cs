@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,38 +55,43 @@ namespace WebApplication
 
             services.AddAutoMapper(o=>o.AddProfile(new AutoMapperPerfile()));
 
-            #region jwt
-            var configuration = new ConfigurationBuilder()
-                    .AddJsonFile("Config/jwt.json")
-                    .Build();
-            services.Configure<JwtSetting>(configuration.GetSection("JwtSetting"));
+            //windows authentication
+            //services.AddAuthentication(IISDefaults.AuthenticationScheme);
+            //services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
 
-            var token = configuration.GetSection("JwtSetting").Get<JwtSetting>();
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                //Token Validation Parameters
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    //获取或设置要使用的Microsoft.IdentityModel.Tokens.SecurityKey用于签名验证。
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.
-                    GetBytes(token.SecurityKey)),
-                    //获取或设置一个System.String，它表示将使用的有效发行者检查代币的发行者。
-                    ValidIssuer = token.Issuer,
-                    //获取或设置一个字符串，该字符串表示将用于检查的有效受众反对令牌的观众。
-                    ValidAudience = token.Audience,
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                };
-            });
-            #endregion
+            //#region jwt
+            //var configuration = new ConfigurationBuilder()
+            //        .AddJsonFile("Config/jwt.json")
+            //        .Build();
+            //services.Configure<JwtSetting>(configuration.GetSection("JwtSetting"));
+
+            //var token = configuration.GetSection("JwtSetting").Get<JwtSetting>();
+
+            //services.AddAuthentication(x =>
+            //{
+            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //}).AddJwtBearer(x =>
+            //{
+            //    x.RequireHttpsMetadata = false;
+            //    x.SaveToken = true;
+            //    //Token Validation Parameters
+            //    x.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuerSigningKey = true,
+            //        //获取或设置要使用的Microsoft.IdentityModel.Tokens.SecurityKey用于签名验证。
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.
+            //        GetBytes(token.SecurityKey)),
+            //        //获取或设置一个System.String，它表示将使用的有效发行者检查代币的发行者。
+            //        ValidIssuer = token.Issuer,
+            //        //获取或设置一个字符串，该字符串表示将用于检查的有效受众反对令牌的观众。
+            //        ValidAudience = token.Audience,
+            //        ValidateIssuer = false,
+            //        ValidateAudience = false,
+            //    };
+            //});
+            //#endregion
 
             //entity framework core
             //services.AddDbContext<SQLiteDbContext>(options =>
