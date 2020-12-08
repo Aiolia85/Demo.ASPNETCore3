@@ -23,8 +23,10 @@ using Reoository.EF;
 namespace WebApplication
 {
     public class ConnectionStrings
-    { 
+    {
         public string DefaultSQLite { get; set; }
+        public string LocalDB { get; set; }
+        public string LocalDB1 { get; set; }
     }
     public class AppSetting
     {
@@ -53,7 +55,21 @@ namespace WebApplication
             services.Configure<AppSetting>(Configuration);
             var appSetting = Configuration.Get<AppSetting>();
 
-            services.AddAutoMapper(o=>o.AddProfile(new AutoMapperPerfile()));
+            services.AddAutoMapper(o => o.AddProfile(new AutoMapperPerfile()));
+
+            //cookies
+            services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                //这里我们将Cookie过期时间设置成了365天，你也可以通过MaxAge属性来设置，不过这里有点需要注意的是，MaxAge会替代Expiration的值
+                //options.Cookie.Expiration = TimeSpan.FromDays(365);
+                //options.Cookie.MaxAge = TimeSpan.FromDays(365);
+                //设置我们自己的数据加密实现
+                //options.DataProtectionProvider = new MyDataProtectionProvider();
+                options.LoginPath = "/Account/CookieLogin";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            });
 
             //windows authentication
             //services.AddAuthentication(IISDefaults.AuthenticationScheme);

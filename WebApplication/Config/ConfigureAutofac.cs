@@ -21,12 +21,28 @@ namespace WebApplication
                     .Build();
             var appSetting = configuration.Get<AppSetting>();
 
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<SQLiteDbContext>().UseSqlite(appSetting.ConnectionStrings.DefaultSQLite);
+            {
+                var dbContextOptionsBuilder = new DbContextOptionsBuilder<SQLiteDbContext>().UseSqlite(appSetting.ConnectionStrings.DefaultSQLite);
 
-            containerBuilder.RegisterType<SQLiteDbContext>()
-            .WithParameter("options", dbContextOptionsBuilder.Options)
-            .InstancePerLifetimeScope();
+                containerBuilder.RegisterType<SQLiteDbContext>()
+                .WithParameter("options", dbContextOptionsBuilder.Options)
+                .InstancePerLifetimeScope();
+            }
 
+            {
+                var dbContextOptionsBuilder = new DbContextOptionsBuilder<LocalDBContext>(new DbContextOptions<LocalDBContext>()).UseSqlServer(appSetting.ConnectionStrings.LocalDB);
+
+                containerBuilder.RegisterType<LocalDBContext>()
+                .WithParameter("options", dbContextOptionsBuilder.Options)
+                .InstancePerLifetimeScope();
+            }
+            {
+                var dbContextOptionsBuilder = new DbContextOptionsBuilder<LocalDBContext1>(new DbContextOptions<LocalDBContext1>()).UseSqlServer(appSetting.ConnectionStrings.LocalDB1);
+
+                containerBuilder.RegisterType<LocalDBContext1>()
+                .WithParameter("options", dbContextOptionsBuilder.Options)
+                .InstancePerLifetimeScope();
+            }
             Assembly Repository = Assembly.Load("Reoository.EF");
             Assembly IRepository = Assembly.Load("Repository");
             containerBuilder.RegisterAssemblyTypes(Repository, IRepository)
